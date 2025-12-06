@@ -8,5 +8,6 @@ include_directories(include/models)
 
 add_executable(fifa_simulator
         include/models/Player.h
-        FIFA_Ultimate_Team_Simulator_Project.pdf
-        include/models/Player.h)
+        include/models/Player.h
+        src/models/Player.cpp
+        include/models/AttackerPlayer.h)
