@@ -18,4 +18,10 @@ class Player{
 
     virtual ~Player() = default;
 
+    virtual void displayInfo() const = 0;
+
+    //Getters
+    std::string getName() const { return name; }
+    std::string getNationality() const { return nationality; }
+    int getOverallRating() const { return overall_rating; }
 };

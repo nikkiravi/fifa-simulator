@@ -10,4 +10,12 @@ add_executable(fifa_simulator
         include/models/Player.h
         include/models/Player.h
         src/models/Player.cpp
-        include/models/AttackerPlayer.h)
+        include/models/AttackerPlayer.h
+        src/models/AttackPlayer.cpp
+        include/models/GKPlayer.h
+        src/models/GKPlayer.cpp
+        include/models/DefenderPlayer.h
+        include/models/MidfielderPlayer.h
+        src/models/MidfielderPlayer.cpp
+        src/models/DefenderPlayer.cpp
+        src/main.cpp)
