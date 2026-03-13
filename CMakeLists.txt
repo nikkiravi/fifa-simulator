@@ -1,21 +1,11 @@
-cmake_minimum_required(VERSION 4.0)
-project(fifa_simulator)
+cmake_minimum_required(VERSION 3.15)
+project(FIFASimulator)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(include)
-include_directories(include/models)
 
-add_executable(fifa_simulator
-        include/models/Player.h
-        include/models/Player.h
-        src/models/Player.cpp
-        include/models/AttackerPlayer.h
-        src/models/AttackPlayer.cpp
-        include/models/GKPlayer.h
-        src/models/GKPlayer.cpp
-        include/models/DefenderPlayer.h
-        include/models/MidfielderPlayer.h
-        src/models/MidfielderPlayer.cpp
-        src/models/DefenderPlayer.cpp
-        src/main.cpp)
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+
+add_executable(fifa_simulator ${SOURCES})
