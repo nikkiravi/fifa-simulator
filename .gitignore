@@ -1,2 +1,11 @@
 FIFA_Ultimate_Team_Simulator_Project.pdf
 .idea
+build/
+cmake-build-debug/
+*.exe
+*.out
+*.o
+data/config.txt
+.vscode/
+.env
+FIFA_Project_Overview.md
