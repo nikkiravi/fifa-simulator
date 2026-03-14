@@ -7,3 +7,5 @@ cmake-build-debug/
 *.o
 data/config.txt
 .vscode/
+.env
+FIFA_Project_Overview.md
