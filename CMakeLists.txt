@@ -22,7 +22,9 @@ add_executable(fifa_simulator ${SOURCES}
         include/database/Database.h
         src/database/Database.cpp
         include/api/PlayerFetcher.h
-        src/api/PlayerFetcher.cpp)
+        src/api/PlayerFetcher.cpp
+        include/utils/RatingGenerator.h
+        src/utils/RatingGenerator.cpp)
 
 # Link libraries
 target_link_libraries(fifa_simulator

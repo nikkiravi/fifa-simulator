@@ -4,6 +4,7 @@
 #include "models/Player.h"
 #include "api/APIClient.h"
 #include "database/Database.h"
+#include "utils/RatingGenerator.h"
 
 class PlayerFetcher
 {
