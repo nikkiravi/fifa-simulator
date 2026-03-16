@@ -39,3 +39,71 @@ long DatabaseClient::getPlayerCount(){
     auto collection = db["players"];
     return collection.count_documents({});
 }
+
+std::vector<PlayerData> DatabaseClient::getPlayerDataByRatingRange(int minRating, int maxRating){
+    auto collection = db["players"];
+    auto query = make_document(
+        kvp("rating", make_document(
+            kvp("$gte", static_cast<int32_t>(minRating)),
+            kvp("$lte", static_cast<int32_t>(maxRating))
+        ))
+    );
+
+    std::vector<PlayerData> results;
+    auto cursor = collection.find(query.view());
+    for (auto&& doc : cursor) {
+        PlayerData pd;
+        pd.name        = std::string(doc["name"].get_string().value);
+        pd.nationality = std::string(doc["nationality"].get_string().value);
+        pd.club        = std::string(doc["club"].get_string().value);
+        pd.position    = std::string(doc["position"].get_string().value);
+        pd.rating      = doc["rating"].get_int32().value;
+
+        auto stats     = doc["stats"].get_document().value;
+        pd.pace        = stats["pace"].get_int32().value;
+        pd.shooting    = stats["shooting"].get_int32().value;
+        pd.passing     = stats["passing"].get_int32().value;
+        pd.dribbling   = stats["dribbling"].get_int32().value;
+        pd.defending   = stats["defending"].get_int32().value;
+        pd.physical    = stats["physical"].get_int32().value;
+
+        results.push_back(pd);
+    }
+    return results;
+}
+
+void DatabaseClient::insertUserCard(const bsoncxx::v_noabi::document::value& doc){
+    auto collection = db["user_cards"];
+    collection.insert_one(doc.view());
+}
+
+std::vector<UserCardData> DatabaseClient::getUserCardData(){
+    auto collection = db["user_cards"];
+    std::vector<UserCardData> results;
+    auto cursor = collection.find({});
+    for (auto&& doc : cursor) {
+        UserCardData ucd;
+        ucd.name        = std::string(doc["name"].get_string().value);
+        ucd.nationality = std::string(doc["nationality"].get_string().value);
+        ucd.club        = std::string(doc["club"].get_string().value);
+        ucd.position    = std::string(doc["position"].get_string().value);
+        ucd.rating      = doc["rating"].get_int32().value;
+        ucd.rarity      = std::string(doc["rarity"].get_string().value);
+
+        auto stats      = doc["stats"].get_document().value;
+        ucd.pace        = stats["pace"].get_int32().value;
+        ucd.shooting    = stats["shooting"].get_int32().value;
+        ucd.passing     = stats["passing"].get_int32().value;
+        ucd.dribbling   = stats["dribbling"].get_int32().value;
+        ucd.defending   = stats["defending"].get_int32().value;
+        ucd.physical    = stats["physical"].get_int32().value;
+
+        results.push_back(ucd);
+    }
+    return results;
+}
+
+long DatabaseClient::getUserCardCount(){
+    auto collection = db["user_cards"];
+    return collection.count_documents({});
+}

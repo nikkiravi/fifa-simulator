@@ -23,5 +23,13 @@ class Player{
     //Getters
     std::string getName() const { return name; }
     std::string getNationality() const { return nationality; }
+    std::string getClub() const { return club; }
+    std::string getPosition() const { return position; }
     int getOverallRating() const { return overall_rating; }
+    int getPace() const { return pace; }
+    int getShooting() const { return shooting; }
+    int getPassing() const { return passing; }
+    int getDribbling() const { return dribbling; }
+    int getDefending() const { return defending; }
+    int getPhysicality() const { return physicality; }
 };

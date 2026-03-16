@@ -5,61 +5,83 @@
 #include "api/APIClient.h"
 #include "api/PlayerFetcher.h"
 #include "database/Database.h"
+#include "packs/PackFactory.h"
+#include "game/Club.h"
 
 int main() {
   try {
-    // Test Milestone 1 - Player classes
-  //   std::cout << "=== Testing Milestone 1 - Player Classes ===\n";
-  //   auto messi = std::make_unique<AttackerPlayer>("Lionel Messi", "Argentina", "Barcelona", "LW", 91, 97, 88, 82, 92, 39, 78);
-  //   messi->displayInfo();
-  //   std::cout << "Milestone 1 Complete!\n\n";
-  //
-  //   // Test Milestone 2 - Config loading
-  //   std::cout << "=== Testing Milestone 2 - Config Loading ===\n";
-  //   Config& config = Config::getInstance();
-  //
-  //   std::cout << "API Key: " << config.get("API_KEY").substr(0, 10) << "..." << std::endl;
-  //   std::cout << "API Base URL: " << config.get("API_BASE_URL") << std::endl;
-  //   std::cout << "Config loading successful!\n\n";
-  //
-  //   // Test Milestone 2 - API Client
-  //   std::cout << "=== Testing Milestone 2 - API Client ===\n";
-  //   APIClient& client = APIClient::getInstance(
-  //       config.get("API_KEY"),
-  //       config.get("API_BASE_URL")
-  //   );
-  //
-  //   // Fetch Premier League teams
-  //   auto response = client.get("/competitions/PL/teams");
-  //
-  //   std::cout << "\nFetched Premier League Teams:\n";
-  //   std::cout << "Total teams: " << response["count"] << "\n";
-  //
-  //   // Display first 3 teams
-  //   int count = 0;
-  //   for (const auto& team : response["teams"]) {
-  //       if (count++ >= 3) break;
-  //       std::cout << "  - " << team["name"] << " (" << team["tla"] << ")\n";
-  //   }
-  //
-  //   std::cout << "\nMilestone 2 - API Integration Complete!\n";
+    // ── Milestone 3 (commented out once DB is populated) ──────────────────
+    // std::cout << "=== Milestone 3 - Player Fetching & Caching ===\n";
+    // Config& config = Config::getInstance();
+    // APIClient& client = APIClient::getInstance(
+    //     config.get("API_KEY"), config.get("API_BASE_URL"));
+    // DatabaseClient& db = DatabaseClient::getInstance();
+    // PlayerFetcher fetcher(client, db);
+    // fetcher.fetchAndCachePlayers(100);
+    // std::cout << "Milestone 3 Complete!\n";
 
-    // Test Milestone 3 - Player fetching and caching
-    std::cout << "=== Testing Milestone 3 - Player Fetching & Caching ===\n";
-
-    Config& config = Config::getInstance();
-
-    APIClient& client = APIClient::getInstance(
-        config.get("API_KEY"),
-        config.get("API_BASE_URL")
-    );
+    // ── Milestone 4 - Pack System & Collection ────────────────────────────
+    std::cout << "=== Testing Milestone 4 - Pack System & Collection ===\n\n";
 
     DatabaseClient& db = DatabaseClient::getInstance();
+    Club myClub(db);
 
-    PlayerFetcher fetcher(client, db);
-    fetcher.fetchAndCachePlayers(100);
+    // 1. Open one of each pack type using the Factory
+    std::cout << "--- Opening packs ---\n";
 
-    std::cout << "Milestone 3 Complete!\n";
+    auto bronzePack = PackFactory::createPack(PackType::BRONZE);
+    std::cout << "\nOpening: " << bronzePack->getPackName() << "\n";
+    std::cout << bronzePack->getPackDescription() << "\n";
+    auto bronzeCards = bronzePack->open();
+    for (const auto& c : bronzeCards) c->displayCard();
+    myClub.addCards(std::move(bronzeCards));
+
+    auto silverPack = PackFactory::createPack(PackType::SILVER);
+    std::cout << "\nOpening: " << silverPack->getPackName() << "\n";
+    std::cout << silverPack->getPackDescription() << "\n";
+    auto silverCards = silverPack->open();
+    for (const auto& c : silverCards) c->displayCard();
+    myClub.addCards(std::move(silverCards));
+
+    auto goldPack = PackFactory::createPack(PackType::GOLD);
+    std::cout << "\nOpening: " << goldPack->getPackName() << "\n";
+    std::cout << goldPack->getPackDescription() << "\n";
+    auto goldCards = goldPack->open();
+    for (const auto& c : goldCards) c->displayCard();
+    myClub.addCards(std::move(goldCards));
+
+    auto premiumPack = PackFactory::createPack(PackType::PREMIUM_GOLD);
+    std::cout << "\nOpening: " << premiumPack->getPackName() << "\n";
+    std::cout << premiumPack->getPackDescription() << "\n";
+    auto premiumCards = premiumPack->open();
+    for (const auto& c : premiumCards) c->displayCard();
+    myClub.addCards(std::move(premiumCards));
+
+    // 2. Display collection statistics
+    myClub.displayStats();
+
+    // 3. Sort by rating and show full collection
+    myClub.sortByRating();
+    myClub.displayCollection();
+
+    // 4. Filter: show only Gold cards
+    std::cout << "\n--- Gold cards in collection ---\n";
+    auto goldOnly = myClub.filterByRarity(CardRarity::GOLD);
+    for (Card* c : goldOnly) c->displayCard();
+    std::cout << "Total gold: " << goldOnly.size() << "\n";
+
+    // 5. Filter: cards rated 80+
+    std::cout << "\n--- Cards rated 80 or above ---\n";
+    auto highRated = myClub.filterByRating(80, 99);
+    for (Card* c : highRated) c->displayCard();
+
+    // 6. Persistence check: reload from DB
+    std::cout << "\n--- Reloading collection from MongoDB ---\n";
+    Club reloadedClub(db);
+    reloadedClub.loadFromDatabase();
+    reloadedClub.displayStats();
+
+    std::cout << "\nMilestone 4 Complete!\n";
 
   } catch (const std::exception& e) {
     std::cerr << "Error: " << e.what() << std::endl;
