@@ -18,6 +18,13 @@ struct UserCardData : PlayerData {
     std::string rarity;
 };
 
+// Holds all data for one saved squad (Milestone 5)
+struct SquadData {
+    std::string squadName;
+    std::string formation;
+    std::vector<UserCardData> players; // 11 entries indexed by slot; empty name = empty slot
+};
+
 class DatabaseClient{
 private:
         static DatabaseClient* instance;
@@ -42,6 +49,11 @@ public:
         void insertUserCard(const bsoncxx::v_noabi::document::value& doc);
         std::vector<UserCardData> getUserCardData();
         long getUserCardCount();
+
+        // Milestone 5 methods - squads collection
+        void insertSquad(const bsoncxx::v_noabi::document::value& doc);
+        SquadData getSquadByName(const std::string& squadName);
+        std::vector<std::string> getAllSquadNames();
 
         DatabaseClient(const DatabaseClient&) = delete;
         DatabaseClient& operator=(const DatabaseClient&) = delete;

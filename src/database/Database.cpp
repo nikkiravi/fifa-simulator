@@ -107,3 +107,60 @@ long DatabaseClient::getUserCardCount(){
     auto collection = db["user_cards"];
     return collection.count_documents({});
 }
+
+// ── Milestone 5 – squads collection ─────────────────────────────────────────
+
+void DatabaseClient::insertSquad(const bsoncxx::v_noabi::document::value& doc) {
+    auto collection = db["squads"];
+    collection.insert_one(doc.view());
+}
+
+SquadData DatabaseClient::getSquadByName(const std::string& squadName) {
+    auto collection = db["squads"];
+    auto query = make_document(kvp("name", squadName));
+    auto result = collection.find_one(query.view());
+    if (!result) {
+        throw std::runtime_error("Squad not found: " + squadName);
+    }
+
+    SquadData sd;
+    auto doc = result->view();
+    sd.squadName = std::string(doc["name"].get_string().value);
+    sd.formation = std::string(doc["formation"].get_string().value);
+    sd.players.resize(11); // indexed by slot number
+
+    for (auto&& playerDoc : doc["players"].get_array().value) {
+        auto pdoc    = playerDoc.get_document().value;
+        int slotIdx  = pdoc["slot"].get_int32().value;
+
+        UserCardData ucd;
+        ucd.name = std::string(pdoc["name"].get_string().value);
+        if (!ucd.name.empty()) {
+            ucd.nationality = std::string(pdoc["nationality"].get_string().value);
+            ucd.club        = std::string(pdoc["club"].get_string().value);
+            ucd.position    = std::string(pdoc["position"].get_string().value);
+            ucd.rating      = pdoc["rating"].get_int32().value;
+            ucd.rarity      = std::string(pdoc["rarity"].get_string().value);
+
+            auto stats      = pdoc["stats"].get_document().value;
+            ucd.pace        = stats["pace"].get_int32().value;
+            ucd.shooting    = stats["shooting"].get_int32().value;
+            ucd.passing     = stats["passing"].get_int32().value;
+            ucd.dribbling   = stats["dribbling"].get_int32().value;
+            ucd.defending   = stats["defending"].get_int32().value;
+            ucd.physical    = stats["physical"].get_int32().value;
+        }
+        sd.players[slotIdx] = ucd;
+    }
+    return sd;
+}
+
+std::vector<std::string> DatabaseClient::getAllSquadNames() {
+    auto collection = db["squads"];
+    std::vector<std::string> names;
+    auto cursor = collection.find({});
+    for (auto&& doc : cursor) {
+        names.push_back(std::string(doc["name"].get_string().value));
+    }
+    return names;
+}
