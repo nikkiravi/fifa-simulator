@@ -19,9 +19,9 @@ This project is a semester-long C++ application that demonstrates:
 - **Pack Opening System**: Probability-based pack opening with Bronze, Silver, Gold, and Premium Gold tiers
 - **Collection Management**: Search, filter, and sort your card collection
 - **Squad Builder**: Build 11-player squads with different formations (4-3-3, 4-4-2, 3-5-2)
-- **Chemistry System**: Calculate individual and team chemistry based on player links (Milestone 6)
+- **Chemistry System**: Calculate individual (0–10) and team (0–100) chemistry via Strategy pattern — swappable between FIFA-style (position + nation + club links) and simple (position-only) strategies
 
-## Current Status: Milestone 5 ✓
+## Current Status: Milestone 6 ✓
 
 **Completed:**
 - ✓ Milestone 1: Player class hierarchy (base class + 4 derived classes)
@@ -29,6 +29,7 @@ This project is a semester-long C++ application that demonstrates:
 - ✓ Milestone 3: PlayerFetcher & MongoDB caching (100+ players with generated FIFA stats)
 - ✓ Milestone 4: Pack system (Factory pattern), Card classes, Club collection manager
 - ✓ Milestone 5: Formation & Squad classes, position validation, MongoDB persistence
+- ✓ Milestone 6: Chemistry system (Strategy pattern), individual + team chemistry scores
 
 ## Technology Stack
 
@@ -80,6 +81,12 @@ Pack (Abstract)
 ├── SilverPack       (10 cards)
 ├── GoldPack         (10 cards)
 └── PremiumGoldPack  (12 cards)
+
+ChemistryStrategy (Abstract)
+├── FIFAChemistryStrategy   (position + nation + club links)
+└── SimpleChemistryStrategy (position-only baseline)
+
+ChemistryCalculator (Context — holds a swappable ChemistryStrategy)
 ```
 
 ## Design Patterns
@@ -117,7 +124,7 @@ make
 - **Milestone 3** (Weeks 5-6): PlayerFetcher & Data Caching ✓
 - **Milestone 4** (Weeks 7-8): Pack System & Collection ✓
 - **Milestone 5** (Weeks 9-10): Squad Builder & Formations ✓
-- **Milestone 6** (Weeks 11-12): Chemistry System
+- **Milestone 6** (Weeks 11-12): Chemistry System ✓
 - **Milestone 7** (Weeks 13-14): Polish & Documentation
 
 ## License
