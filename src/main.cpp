@@ -10,6 +10,7 @@
 #include "game/Club.h"
 #include "game/Formation.h"
 #include "game/Squad.h"
+#include "game/ChemistryCalculator.h"
 
 int main() {
   try {
@@ -167,6 +168,31 @@ int main() {
     reloadedSquad.displaySquad();
 
     std::cout << "\nMilestone 5 Complete!\n";
+
+    // ── Milestone 6 - Chemistry System ────────────────────────────────────────
+    std::cout << "\n=== Testing Milestone 6 - Chemistry System ===\n\n";
+
+    // 1. Use the squad already built above (mySquad, 4-3-3).
+    //    Run with the full FIFA chemistry strategy first.
+    ChemistryCalculator calculator(std::make_unique<FIFAChemistryStrategy>());
+    calculator.displayChemistry(mySquad);
+
+    // 2. Swap strategy at runtime to the simple (position-only) strategy
+    //    to demonstrate the Strategy pattern.
+    std::cout << "--- Switching to Simple (position-only) strategy ---\n";
+    calculator.setStrategy(std::make_unique<SimpleChemistryStrategy>());
+    calculator.displayChemistry(mySquad);
+
+    // 3. Switch back to FIFA strategy and show chemistry for the reloaded squad.
+    std::cout << "--- FIFA chemistry for squad reloaded from MongoDB ---\n";
+    calculator.setStrategy(std::make_unique<FIFAChemistryStrategy>());
+    calculator.displayChemistry(reloadedSquad);
+
+    // 4. Show raw team-chemistry score without the full report.
+    int teamChem = calculator.calculateTeamChemistry(mySquad);
+    std::cout << "Quick team chemistry score: " << teamChem << "/100\n";
+
+    std::cout << "\nMilestone 6 Complete!\n";
 
   } catch (const std::exception& e) {
     std::cerr << "Error: " << e.what() << std::endl;
